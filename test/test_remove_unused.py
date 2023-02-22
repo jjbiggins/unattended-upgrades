@@ -85,11 +85,10 @@ Unattended-Upgrade::Skip-Updates-On-Metered-Connections "false";
         with open(self.log) as f:
             # both the new and the old unused dependency are removed
             needle = "Packages that were successfully auto-removed: "\
-                     "any-old-unused-modules linux-image-4.05.0-1021-kvm "\
-                     "old-unused-dependency test-package-dependency\n"
+                         "any-old-unused-modules linux-image-4.05.0-1021-kvm "\
+                         "old-unused-dependency test-package-dependency\n"
             haystack = f.read()
-            self.assertTrue(needle in haystack,
-                            "Can not find '%s' in '%s'" % (needle, haystack))
+            self.assertTrue(needle in haystack, f"Can not find '{needle}' in '{haystack}'")
 
     def test_remove_unused_dependencies_new_unused_only(self):
         apt.apt_pkg.config.set("APT::VersionedKernelPackages::", "linux-image")
@@ -111,20 +110,21 @@ Unattended-Upgrade::Skip-Updates-On-Metered-Connections "false";
         with open(self.log) as f:
             # ensure its only exactly one package that is removed
             needle_kernel_bad = "Removing unused kernel packages: "\
-                                "any-old-unused-modules\n"
+                                    "any-old-unused-modules\n"
             needle_kernel_good = "Removing unused kernel packages: "\
-                                 "linux-image-4.05.0-1021-kvm\n"
+                                     "linux-image-4.05.0-1021-kvm\n"
             needle = "Packages that were successfully auto-removed: "\
-                     "test-package-dependency\n"
+                         "test-package-dependency\n"
             haystack = f.read()
-            self.assertTrue(needle in haystack,
-                            "Can not find '%s' in '%s'" % (needle, haystack))
-            self.assertTrue(needle_kernel_good in haystack,
-                            "Can not find '%s' in '%s'" % (needle_kernel_good,
-                                                           haystack))
-            self.assertFalse(needle_kernel_bad in haystack,
-                             "Found '%s' in '%s'" % (needle_kernel_bad,
-                                                     haystack))
+            self.assertTrue(needle in haystack, f"Can not find '{needle}' in '{haystack}'")
+            self.assertTrue(
+                needle_kernel_good in haystack,
+                f"Can not find '{needle_kernel_good}' in '{haystack}'",
+            )
+            self.assertFalse(
+                needle_kernel_bad in haystack,
+                f"Found '{needle_kernel_bad}' in '{haystack}'",
+            )
 
     def test_remove_valid(self):
         cache = unattended_upgrade.UnattendedUpgradesCache(

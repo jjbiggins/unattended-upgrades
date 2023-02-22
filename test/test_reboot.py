@@ -94,7 +94,7 @@ class RebootTestCase(TestBase):
         unattended_upgrade.USERS = ["/bin/date", "+%Y %Y %Y"]
         users = unattended_upgrade.logged_in_users()
         today = datetime.date.today()
-        self.assertEqual(users, set([today.strftime("%Y")]))
+        self.assertEqual(users, {today.strftime("%Y")})
 
 
 if __name__ == "__main__":

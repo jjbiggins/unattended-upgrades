@@ -34,7 +34,7 @@ def enable_install_on_shutdown():
     try:
         subprocess.check_output(['/bin/sed', '-i', sed_cmd, apt_conf_file])
     except subprocess.CalledProcessError:
-        print("Unable to edit %s" % apt_conf_file)
+        print(f"Unable to edit {apt_conf_file}")
         return False
     return True
 
@@ -50,7 +50,7 @@ def check_log_files():
 
     for file in logfiles:
         if not os.path.exists(logdir + file):
-            print("File missing : %s" % (logdir + file))
+            print(f"File missing : {logdir + file}")
             return False
     return True
 

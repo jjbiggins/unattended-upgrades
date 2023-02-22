@@ -40,9 +40,9 @@ deb-src http://security.ubuntu.com/ubuntu/ lucid-security main restricted
 """
 DISTRO = "lucid"
 ARCH = "i386"
-TARBALL = "%s-%s.tgz" % (DISTRO, ARCH)
+TARBALL = f"{DISTRO}-{ARCH}.tgz"
 MIRROR = "http://archive.ubuntu.com/ubuntu"
-APT_CONF = """APT::Architecture "%s";""" % ARCH
+APT_CONF = f"""APT::Architecture "{ARCH}";"""
 ORIGINS_PATTERN = "origin=Ubuntu,archive=lucid-security"
 
 apt.apt_pkg.config.set("APT::Architecture", ARCH)
@@ -58,10 +58,10 @@ class TestUnattendedUpgrade(TestBase):
         subprocess.call(
             [
                 "debootstrap",
-                "--arch=%s" % ARCH,
-                # smaller version of the minimal system
+                f"--arch={ARCH}",
                 "--variant=minbase",
-                "--include=python-apt,apt-utils,gpgv,ubuntu-keyring," "ca-certificates",
+                "--include=python-apt,apt-utils,gpgv,ubuntu-keyring,"
+                "ca-certificates",
                 DISTRO,
                 target,
                 MIRROR,
@@ -167,7 +167,7 @@ class TestUnattendedUpgrade(TestBase):
         apt.apt_pkg.config.clear("Acquire::http::ProxyAutoDetect")
 
         # create chroot
-        target = "./test-chroot.%s" % DISTRO
+        target = f"./test-chroot.{DISTRO}"
 
         # setup chroot if needed
         if clean_chroot:
@@ -178,7 +178,7 @@ class TestUnattendedUpgrade(TestBase):
             ["mount", "-t", "devpts", "devptsfs", os.path.join(target, "dev", "pts")]
         )
         if ret != 0:
-            raise Exception("Failed to mount %s/proc" % target)
+            raise Exception(f"Failed to mount {target}/proc")
         self.addCleanup(
             lambda: subprocess.call(["umount", os.path.join(target, "dev", "pts")])
         )
@@ -233,18 +233,18 @@ class TestUnattendedUpgrade(TestBase):
         log = self._get_logfile_location(target)
         logfile = open(log).read()
         # print(logfile)
-        if not re.search("Packages that will be upgraded:.*%s" % needle_pkg,
-                         logfile):
-            logging.warn(
-                "Can not find expected %s upgrade in log" % needle_pkg)
+        if not re.search(
+            f"Packages that will be upgraded:.*{needle_pkg}", logfile
+        ):
+            logging.warn(f"Can not find expected {needle_pkg} upgrade in log")
             return False
         if "ERROR Installing the upgrades failed" in logfile:
             logging.warn("Got a ERROR in the logfile")
             return False
         dpkg_log = os.path.join(target, "var/log/unattended-upgrades/*-dpkg*.log")
         dpkg_logfile = open(glob.glob(dpkg_log)[0]).read()
-        if not "Preparing to replace %s" % needle_pkg in dpkg_logfile:
-            logging.warn("Did not find %s upgrade in %s" % (dpkg_log, needle_pkg))
+        if f"Preparing to replace {needle_pkg}" not in dpkg_logfile:
+            logging.warn(f"Did not find {dpkg_log} upgrade in {needle_pkg}")
             return False
         # print(dpkg_logfile)
         return True

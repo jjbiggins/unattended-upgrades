@@ -203,8 +203,7 @@ Debian-Security']
         send_summary_mail(*self._return_mock_data())
         with open(os.path.join(self.tempdir, "mail.txt"), "rb") as fp:
             mail_txt = fp.read().decode("utf-8")
-        self.assertTrue(
-            "From: rootolv" in mail_txt, "missing From: in %s" % mail_txt)
+        self.assertTrue("From: rootolv" in mail_txt, f"missing From: in {mail_txt}")
 
     @patch("unattended_upgrade.run")
     def test_exception(self, mock_run):
