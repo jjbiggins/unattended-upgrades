@@ -85,8 +85,7 @@ Unattended-Upgrade::OnlyOnAcPower "false";
         with open(self.log) as f:
             needle = "Not running on the development release"
             haystack = f.read()
-            self.assertTrue(needle in haystack,
-                            "Can not find '%s' in '%s'" % (needle, haystack))
+            self.assertTrue(needle in haystack, f"Can not find '{needle}' in '{haystack}'")
 
     def test_auto_devrelease(self):
         """We are not ready to auto upgrade just yet"""
@@ -99,11 +98,9 @@ Unattended-Upgrade::OnlyOnAcPower "false";
         unattended_upgrade.main(options, rootdir=self.rootdir)
         # read the log to see what happend
         with open(self.log) as f:
-            needle = ("Not running on this development release before %s"
-                      % MockDistroAuto.start_updates)
+            needle = f"Not running on this development release before {MockDistroAuto.start_updates}"
             haystack = f.read()
-            self.assertTrue(needle in haystack,
-                            "Can not find '%s' in '%s'" % (needle, haystack))
+            self.assertTrue(needle in haystack, f"Can not find '{needle}' in '{haystack}'")
 
     def test_noauto_devrelease(self):
         """We are in the valid time period"""
@@ -118,8 +115,7 @@ Unattended-Upgrade::OnlyOnAcPower "false";
             # Check that we could have run
             needle = "Running on the development release"
             haystack = f.read()
-            self.assertTrue(needle in haystack,
-                            "Can not find '%s' in '%s'" % (needle, haystack))
+            self.assertTrue(needle in haystack, f"Can not find '{needle}' in '{haystack}'")
 
     def test_norelease_devrelease(self):
         """The devel series has no release update, so do updates"""
@@ -134,8 +130,7 @@ Unattended-Upgrade::OnlyOnAcPower "false";
             # Check that we could have run
             needle = "Running on the development release"
             haystack = f.read()
-            self.assertTrue(needle in haystack,
-                            "Can not find '%s' in '%s'" % (needle, haystack))
+            self.assertTrue(needle in haystack, f"Can not find '{needle}' in '{haystack}'")
 
 
 if __name__ == "__main__":

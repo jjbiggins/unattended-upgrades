@@ -31,8 +31,7 @@ class TestOnBattery(TestBase):
         with open(self.log) as f:
             needle = "System is on battery power, stopping"
             haystack = f.read()
-            self.assertTrue(needle in haystack,
-                            "Can not find '%s' in '%s'" % (needle, haystack))
+            self.assertTrue(needle in haystack, f"Can not find '{needle}' in '{haystack}'")
 
 
 if __name__ == "__main__":

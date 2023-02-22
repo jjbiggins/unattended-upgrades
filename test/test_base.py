@@ -71,10 +71,10 @@ class TestBase(unittest.TestCase):
         with open(mock_dpkg_status, "a") as fp:
             for (pkgname, ver, deps) in fake_pkgs:
                 # only "Depends" supported right now, extend as needed
-                self.assertIn(set(deps.keys()), (set([]), set(["Depends"])))
+                self.assertIn(set(deps.keys()), (set([]), {"Depends"}))
                 dep_str = ""
                 if deps.get("Depends"):
-                    dep_str = "Depends: {}".format(",".join(deps.get("Depends", [])))
+                    dep_str = f'Depends: {",".join(deps.get("Depends", []))}'
                 fp.write(
                     """
 Package: %s
@@ -112,7 +112,7 @@ print(sys.argv)
             ("DISTRO_CODENAME", codename),
             ("DISTRO_DESC", descr),
         ]:
-            patcher = patch("unattended_upgrade.{}".format(attr), fake_value)
+            patcher = patch(f"unattended_upgrade.{attr}", fake_value)
             patcher.start()
             self.addCleanup(patcher.stop)
 

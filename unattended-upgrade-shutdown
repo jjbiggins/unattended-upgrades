@@ -100,7 +100,7 @@ def signal_stop_unattended_upgrade():
     pidfile = "/var/run/unattended-upgrades.pid"
     if os.path.exists(pidfile):
         pid = int(open(pidfile).read())
-        logging.debug("found running unattended-upgrades pid %s" % pid)
+        logging.debug(f"found running unattended-upgrades pid {pid}")
         try:
             os.kill(pid, signal.SIGTERM)
         except ProcessLookupError:
@@ -324,16 +324,14 @@ class UnattendedUpgradesShutdown():
             self.start_time = time.time()
             logging.debug("Starting countdown of %s minutes",
                           self.max_delay / 60)
-        else:
-            if (time.time() - self.start_time) > self.max_delay:
-                logging.warning(_(
-                    "Giving up on lockfile after %s minutes of delay"),
-                    self.max_delay / 60)
-                sys.exit(1)
+        elif (time.time() - self.start_time) > self.max_delay:
+            logging.warning(_(
+                "Giving up on lockfile after %s minutes of delay"),
+                self.max_delay / 60)
+            sys.exit(1)
 
-        if not self.stop_signal_received.is_set():
-            if self.try_iter_on_shutdown():
-                return True
+        if not self.stop_signal_received.is_set() and self.try_iter_on_shutdown():
+            return True
 
         # run monitoring and keep "UI" updated
         res = apt_pkg.get_lock(self.options.lock_file)
@@ -395,11 +393,7 @@ def main():
                       help="wait for TERM signal before starting operation")
     (options, args) = parser.parse_args()
 
-    # setup logging
-    level = logging.INFO
-    if options.debug:
-        level = logging.DEBUG
-
+    level = logging.DEBUG if options.debug else logging.INFO
     if not os.path.exists(logdir):
         os.makedirs(logdir)
     logfile = os.path.join(logdir, "unattended-upgrades-shutdown.log")

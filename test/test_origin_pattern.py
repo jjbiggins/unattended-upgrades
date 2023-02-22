@@ -210,7 +210,7 @@ class TestOriginPatern(TestBase):
             apt_pkg.config.set("Unattended-Upgrade::Allowed-Origins::", cfg)
             li = unattended_upgrade.get_allowed_origins_legacy()
             self.assertEqual(len(li), 1)
-            self.assertEqual(li[0], "o=%s,a=%s" % (distro_id, distro_codename))
+            self.assertEqual(li[0], f"o={distro_id},a={distro_codename}")
 
 
 if __name__ == "__main__":
